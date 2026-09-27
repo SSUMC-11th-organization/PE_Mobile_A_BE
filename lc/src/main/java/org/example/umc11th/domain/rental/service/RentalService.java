@@ -5,7 +5,7 @@ import org.example.umc11th.domain.book.entity.Book;
 import org.example.umc11th.domain.book.repository.BookRepository;
 import org.example.umc11th.domain.rental.dto.RentalRequest;
 import org.example.umc11th.domain.rental.entity.Rental;
-import org.example.umc11th.domain.rental.repostory.RentalRepository;
+import org.example.umc11th.domain.rental.repository.RentalRepository;
 import org.example.umc11th.domain.user.entity.User;
 import org.example.umc11th.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;

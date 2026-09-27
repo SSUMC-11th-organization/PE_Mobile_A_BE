@@ -1,4 +1,4 @@
-package org.example.umc11th.domain.rental.repostory;
+package org.example.umc11th.domain.rental.repository;
 
 import org.example.umc11th.domain.rental.entity.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;
