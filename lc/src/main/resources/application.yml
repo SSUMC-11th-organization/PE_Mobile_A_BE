@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: umc11th
+  datasource:
+    url: jdbc:mysql://localhost:3307/umc-mysql?serverTimezone=Asia/Seoul
+    username: root
+    password: ${DB_PASSWORD:0520}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true

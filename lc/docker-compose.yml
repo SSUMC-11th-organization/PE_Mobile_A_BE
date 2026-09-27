@@ -1,0 +1,21 @@
+name: umc11th   # 폴더명이 바뀌어도 기존 볼륨(umc11th_mysql-data)을 그대로 쓰기 위함
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: umc-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "0520"
+      MYSQL_DATABASE: umc-mysql
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql                 # 컨테이너를 지워도 데이터 유지
+      - ./sql:/docker-entrypoint-initdb.d         # 처음 뜰 때 sql 폴더 안의 파일 자동 실행
+
+volumes:
+  mysql-data:
