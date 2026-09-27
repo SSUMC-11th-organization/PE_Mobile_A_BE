@@ -1,10 +1,7 @@
 package org.example.umc11th.domain.book.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.umc11th.domain.category.entity.Category;
 
 @Entity
@@ -28,6 +25,7 @@ public class Book {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Setter
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable;
 

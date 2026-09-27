@@ -25,4 +25,9 @@ public class BookController {
         bookService.createBook(request);
         return "Book created";
     }
+
+    @GetMapping("/category/{categoryId}")
+    public List<BookResponse> getBooksByCategoryId(@PathVariable Long categoryId) {
+        return  bookService.getBooksByCategoryId(categoryId);
+    }
 }

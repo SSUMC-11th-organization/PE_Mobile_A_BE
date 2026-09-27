@@ -36,4 +36,10 @@ public class BookService {
                 .build();
         bookRepository.save(book);
     }
+
+    public List<BookResponse> getBooksByCategoryId(Long categoryId){
+        return bookRepository.findByCategoryId(categoryId).stream()
+                .map(BookResponse::from)
+                .toList();
+    }
 }
