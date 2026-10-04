@@ -3,6 +3,7 @@ package org.example.umc11th.global.exception;
 import org.example.umc11th.global.apiPayload.ApiResponse;
 import org.example.umc11th.global.apiPayload.code.BaseErrorCode;
 import org.example.umc11th.global.apiPayload.code.GeneralErrorCode;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(GeneralException e) {
         BaseErrorCode code = e.getCode();
+        return ResponseEntity.status(code.getHttpStatus())
+                .body(ApiResponse.onFailure(code.getCode(), code.getMessage(), null));
+    }
+
+    // DB 제약 조건 위반 (409) - 동시 요청으로 existsByTitle 검사를 통과한 중복 등
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrity(DataIntegrityViolationException e) {
+        BaseErrorCode code = GeneralErrorCode.CONFLICT;
         return ResponseEntity.status(code.getHttpStatus())
                 .body(ApiResponse.onFailure(code.getCode(), code.getMessage(), null));
     }

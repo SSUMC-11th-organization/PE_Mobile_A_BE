@@ -11,7 +11,7 @@ CREATE TABLE category (
 CREATE TABLE book (
     book_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     category_id BIGINT NOT NULL,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     is_available BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (category_id) REFERENCES category(category_id)
