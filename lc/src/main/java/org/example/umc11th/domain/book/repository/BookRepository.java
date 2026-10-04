@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByCategoryId(Long categoryId);
+    List<Book> findAllByOrderByIdDesc();
+    List<Book> findByTitleContainingOrderByIdDesc(String Keyword);
+    boolean existsByTitle(String Title);
 }

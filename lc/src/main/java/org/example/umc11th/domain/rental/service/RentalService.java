@@ -8,6 +8,12 @@ import org.example.umc11th.domain.rental.entity.Rental;
 import org.example.umc11th.domain.rental.repository.RentalRepository;
 import org.example.umc11th.domain.user.entity.User;
 import org.example.umc11th.domain.user.repository.UserRepository;
+import org.example.umc11th.domain.book.exception.BookException;
+import org.example.umc11th.domain.book.exception.BookErrorCode;
+import org.example.umc11th.domain.rental.exception.RentalException;
+import org.example.umc11th.domain.rental.exception.RentalErrorCode;
+import org.example.umc11th.domain.user.exception.UserException;
+import org.example.umc11th.domain.user.exception.UserErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +27,13 @@ public class RentalService {
 
     public Long createRental(RentalRequest request) {
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
         Book book = bookRepository.findById(request.bookId())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 도서입니다. "));
+                .orElseThrow(() -> new BookException(BookErrorCode.BOOK_NOT_FOUND));
 
         if(!book.getIsAvailable()){
-            throw new RuntimeException("이미 대여 중인 도서입니다.");
+            throw new BookException(BookErrorCode.BOOK_ALREADY_RENTED);
         }
         book.setIsAvailable(false);
 
@@ -37,10 +43,10 @@ public class RentalService {
 
     public void returnRental(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 대여 기록입니다."));
+                .orElseThrow(() -> new RentalException(RentalErrorCode.RENTAL_NOT_FOUND));
 
         if (rental.getReturnedAt() != null) {
-            throw new RuntimeException("이미 반납된 대여 기록입니다.");
+            throw new RentalException(RentalErrorCode.RENTAL_ALREADY_RETURNED);
         }
 
         rental.returnBook();
