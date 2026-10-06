@@ -1,8 +1,8 @@
 package org.example.umc11th.domain.book.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.umc11th.domain.book.dto.BookRequest;
-import org.example.umc11th.domain.book.dto.BookResponse;
+import org.example.umc11th.domain.book.dto.BookRequestDTO;
+import org.example.umc11th.domain.book.dto.BookResponseDTO;
 import org.example.umc11th.domain.book.entity.Book;
 import org.example.umc11th.domain.book.exception.BookErrorCode;
 import org.example.umc11th.domain.book.exception.BookException;
@@ -23,16 +23,16 @@ public class BookService {
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<BookResponse> getAllBooks(String keyword) {
+    public List<BookResponseDTO> getAllBooks(String keyword) {
         List<Book> books = (keyword == null || keyword.isBlank())
                 ? bookRepository.findAllByOrderByIdDesc()
                 : bookRepository.findByTitleContainingOrderByIdDesc(keyword);
 
-        return books.stream().map(BookResponse::from).toList();
+        return books.stream().map(BookResponseDTO::from).toList();
     }
 
     @Transactional
-    public BookResponse createBook(BookRequest request){
+    public BookResponseDTO createBook(BookRequestDTO request){
         Category category = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new CategoryException(CategoryErrorCode.CATEGORY_NOT_FOUND));
 
@@ -45,12 +45,12 @@ public class BookService {
                 .title(request.title())
                 .description(request.description())
                 .build();
-        return BookResponse.from(bookRepository.save(book));
+        return BookResponseDTO.from(bookRepository.save(book));
     }
 
-    public List<BookResponse> getBooksByCategoryId(Long categoryId){
+    public List<BookResponseDTO> getBooksByCategoryId(Long categoryId){
         return bookRepository.findByCategoryId(categoryId).stream()
-                .map(BookResponse::from)
+                .map(BookResponseDTO::from)
                 .toList();
     }
 }

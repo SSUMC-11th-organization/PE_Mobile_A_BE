@@ -3,7 +3,7 @@ package org.example.umc11th.domain.rental.service;
 import lombok.RequiredArgsConstructor;
 import org.example.umc11th.domain.book.entity.Book;
 import org.example.umc11th.domain.book.repository.BookRepository;
-import org.example.umc11th.domain.rental.dto.RentalRequest;
+import org.example.umc11th.domain.rental.dto.RentalRequestDTO;
 import org.example.umc11th.domain.rental.entity.Rental;
 import org.example.umc11th.domain.rental.repository.RentalRepository;
 import org.example.umc11th.domain.user.entity.User;
@@ -25,7 +25,7 @@ public class RentalService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public Long createRental(RentalRequest request) {
+    public Long createRental(RentalRequestDTO request) {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
