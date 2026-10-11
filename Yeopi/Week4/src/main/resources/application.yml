@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: "baby_doyeop"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PW}
+
+  jpa:
+    hibernate:
+      # 이미 만든 MySQL 테이블을 그대로 쓰므로 엔티티와 구조가 맞는지만 확인합니다.
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
