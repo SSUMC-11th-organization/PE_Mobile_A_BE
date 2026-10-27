@@ -1,25 +1,12 @@
 SET NAMES utf8mb4;
 
-INSERT INTO users (nickname) VALUES ('민서'), ('수현');
+-- password는 6주차 bcrypt 전까지 더미 문자열로만 채웁니다. 실제 비밀번호를 넣지 마세요.
+INSERT INTO member (email, password, nickname) VALUES
+('noco@umc.com', '$2a$10$dummyEncodedPasswordValue', '수현'),
+('minseo@umc.com', '$2a$10$dummyEncodedPasswordValue', '민서');
 
-INSERT INTO category (name) VALUES ('문학'), ('과학');
-
-INSERT INTO book (category_id, title, description, is_available) VALUES
-(1, '달빛 도서관', '소설', TRUE),
-(1, '겨울의 편지', '에세이', FALSE),
-(2, '우주를 읽는 법', '과학 교양', TRUE);
-
-INSERT INTO rental (user_id, book_id, rented_at, due_at, returned_at) VALUES
-(1, 2, '2026-08-10 10:00:00', '2026-08-17 10:00:00', NULL),
-(2, 1, '2026-08-01 10:00:00', '2026-08-08 10:00:00', '2026-08-07 15:00:00');
-
-INSERT INTO tag (name) VALUES ('소설'), ('추천'), ('과학');
-
-INSERT INTO book_tag (book_id, tag_id) VALUES
-(1, 1),
-(1, 2),
-(3, 3);
-
-INSERT INTO book_like (user_id, book_id) VALUES
-(1, 1),
-(1, 3);
+-- movie_id는 TMDB 영화 ID (550: 파이트 클럽, 155: 다크 나이트)
+INSERT INTO rating (member_id, movie_id, score, comment) VALUES
+(1, 550, 5, '최고의 영화!'),
+(1, 155, 4, '다시 봐도 명작'),
+(2, 550, 3, '호불호가 갈릴 것 같아요');

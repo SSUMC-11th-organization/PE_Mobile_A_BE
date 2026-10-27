@@ -1,57 +1,31 @@
-CREATE TABLE users (
-    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nickname VARCHAR(30) NOT NULL
+CREATE TABLE member (
+    member_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email       VARCHAR(254) NOT NULL UNIQUE,
+    password    VARCHAR(60)  NOT NULL,
+    nickname    VARCHAR(50)  NOT NULL UNIQUE,
+    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE category (
-    category_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL
+CREATE TABLE rating (
+    rating_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id   BIGINT   NOT NULL,
+    movie_id    BIGINT   NOT NULL,
+    score       TINYINT  NOT NULL,
+    comment     TEXT,
+    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (member_id) REFERENCES member(member_id),
+    UNIQUE KEY uk_rating_member_movie (member_id, movie_id)
 );
 
-CREATE TABLE book (
-    book_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    category_id BIGINT NOT NULL,
-    title VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    is_available BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (category_id) REFERENCES category(category_id)
-);
-
-CREATE TABLE rental (
-    rental_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    book_id BIGINT NOT NULL,
-    rented_at DATETIME NOT NULL,
-    due_at DATETIME NOT NULL,
-    returned_at DATETIME NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (book_id) REFERENCES book(book_id)
-);
-
-CREATE TABLE tag (
-    tag_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL
-);
-
-CREATE TABLE book_tag (
-    book_id BIGINT,
-    tag_id BIGINT,
-    PRIMARY KEY (book_id, tag_id),
-    FOREIGN KEY (book_id) REFERENCES book(book_id),
-    FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
-);
-
-CREATE TABLE book_like (
-    user_id BIGINT,
-    book_id BIGINT,
-    PRIMARY KEY (user_id, book_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (book_id) REFERENCES book(book_id)
-);
-
-CREATE TABLE notification (
-    notification_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    type VARCHAR(30) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+-- 8주차 즐겨찾기 실습에서 사용할 테이블입니다. 이번 주차에는 스키마만 만들어 둡니다.
+CREATE TABLE favorite (
+    favorite_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id   BIGINT   NOT NULL,
+    movie_id    BIGINT   NOT NULL,
+    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (member_id) REFERENCES member(member_id),
+    UNIQUE KEY uk_favorite_member_movie (member_id, movie_id)
 );
