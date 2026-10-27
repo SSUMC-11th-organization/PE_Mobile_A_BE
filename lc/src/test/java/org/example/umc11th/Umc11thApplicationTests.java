@@ -1,0 +1,13 @@
+package org.example.umc11th;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class Umc11thApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
