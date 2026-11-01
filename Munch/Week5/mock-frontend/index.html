@@ -45,9 +45,11 @@
     <!-- 3. 유저별 평점 조회 -->
     <section>
       <h2>유저별 평점 조회</h2>
-      <div class="endpoint">GET /members/{memberId}/ratings</div>
+      <div class="endpoint">GET /members/{memberId}/ratings?page={page}&amp;size={size}</div>
       <p>
-        <input id="memberId" type="number" value="1" placeholder="회원 ID" />
+        <input id="memberId" type="number" value="1" placeholder="회원 ID" style="width: 90px" />
+        page <input id="page" type="number" value="0" style="width: 60px" />
+        size <input id="size" type="number" value="10" style="width: 60px" />
         <button onclick="getRatings()">조회</button>
       </p>
       <div id="ratings-result"></div>
@@ -73,28 +75,34 @@
         }
       }
 
-      const availableText = (label) => (res, data) =>
-        data.available
+      const availableText = (label, rule) => (res, data) => {
+        if (res.status === 400) return `<span class="bad">${label} 형식이 올바르지 않습니다. (${rule})</span>`;
+        return data.available
           ? `<span class="ok">사용 가능한 ${label}입니다.</span>`
           : `<span class="bad">이미 사용 중인 ${label}입니다.</span>`;
+      };
 
       function checkNickname() {
         const nickname = document.getElementById("nickname").value.trim();
-        callApi(`/members/nickname/${encodeURIComponent(nickname)}`, "nickname-result", availableText("닉네임"));
+        callApi(`/members/nickname/${encodeURIComponent(nickname)}`, "nickname-result", availableText("닉네임", "2~12자"));
       }
 
       function checkEmail() {
         const email = document.getElementById("email").value.trim();
-        callApi(`/members/email/${encodeURIComponent(email)}`, "email-result", availableText("이메일"));
+        callApi(`/members/email/${encodeURIComponent(email)}`, "email-result", availableText("이메일", "예: user@umc.com"));
       }
 
       function getRatings() {
         const memberId = document.getElementById("memberId").value.trim();
-        callApi(`/members/${encodeURIComponent(memberId)}/ratings`, "ratings-result", (res, data) =>
-          res.ok
-            ? `<span class="ok">평점 ${data.length}건 (최신순)</span>`
-            : `<span class="bad">존재하지 않는 유저입니다. (${res.status})</span>`
-        );
+        const page = document.getElementById("page").value.trim();
+        const size = document.getElementById("size").value.trim();
+        const query = new URLSearchParams({ page, size });
+        callApi(`/members/${encodeURIComponent(memberId)}/ratings?${query}`, "ratings-result", (res, data) => {
+          if (res.status === 400) return `<span class="bad">page는 0 이상, size는 1~100이어야 합니다. (400)</span>`;
+          if (res.status === 404) return `<span class="bad">존재하지 않는 유저입니다. (404)</span>`;
+          return `<span class="ok">평점 ${data.content.length}건 / 전체 ${data.totalElements}건 ` +
+            `(page ${data.page + 1} / ${Math.max(data.totalPages, 1)}, 최신순${data.hasNext ? ", 다음 페이지 있음" : ""})</span>`;
+        });
       }
     </script>
   </body>
