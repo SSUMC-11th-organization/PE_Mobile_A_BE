@@ -1,17 +1,100 @@
 <!-- mock-frontend/index.html -->
 <!doctype html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>간이 프론트 : UMC Movie</title>
+    <style>
+      body { font-family: "Malgun Gothic", sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; }
+      section { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+      h2 { margin: 0 0 4px; font-size: 18px; }
+      .endpoint { color: #666; font-family: Consolas, monospace; font-size: 13px; }
+      input { padding: 6px 8px; width: 220px; }
+      button { padding: 6px 12px; cursor: pointer; }
+      .meta { color: #666; font-family: Consolas, monospace; font-size: 12px; margin-top: 8px; }
+      pre { background: #f5f5f5; padding: 8px; border-radius: 6px; white-space: pre-wrap; margin: 4px 0 0; }
+      .ok { color: #16a34a; font-weight: bold; }
+      .bad { color: #dc2626; font-weight: bold; }
+    </style>
+  </head>
   <body>
-    <h1>간이 프론트 : 닉네임 중복 체크</h1>
-    <button onclick="checkNickname()">'noco'으로 중복 체크</button>
-    <p id="result"></p>
+    <h1>간이 프론트 : UMC Movie</h1>
+
+    <!-- 1. 닉네임 중복 체크 -->
+    <section>
+      <h2>닉네임 중복 체크</h2>
+      <div class="endpoint">GET /members/nickname/{nickname}</div>
+      <p>
+        <input id="nickname" value="noco" placeholder="닉네임" />
+        <button onclick="checkNickname()">중복 체크</button>
+      </p>
+      <div id="nickname-result"></div>
+    </section>
+
+    <!-- 2. 이메일 중복 체크 -->
+    <section>
+      <h2>이메일 중복 체크</h2>
+      <div class="endpoint">GET /members/email/{email}</div>
+      <p>
+        <input id="email" value="noco@umc.com" placeholder="이메일" />
+        <button onclick="checkEmail()">중복 체크</button>
+      </p>
+      <div id="email-result"></div>
+    </section>
+
+    <!-- 3. 유저별 평점 조회 -->
+    <section>
+      <h2>유저별 평점 조회</h2>
+      <div class="endpoint">GET /members/{memberId}/ratings</div>
+      <p>
+        <input id="memberId" type="number" value="1" placeholder="회원 ID" />
+        <button onclick="getRatings()">조회</button>
+      </p>
+      <div id="ratings-result"></div>
+    </section>
 
     <script>
-      async function checkNickname() {
-        // Spring이면 8080, NestJS면 3000으로 바꿔서 테스트하세요.
-        const res = await fetch("http://localhost:3000/members/nickname/noco");
-        const data = await res.json();
-        document.getElementById("result").innerText = JSON.stringify(data);
+      // Spring이면 8080, NestJS면 3000으로 바꿔서 테스트하세요.
+      const API_BASE = "http://localhost:8080";
+
+      // 요청을 보내고 [요청 URL → 상태 코드]와 응답 JSON을 화면에 그대로 찍어줍니다.
+      async function callApi(path, resultId, summary) {
+        const box = document.getElementById(resultId);
+        const url = API_BASE + path;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          box.innerHTML =
+            summary(res, data) +
+            `<div class="meta">GET ${url} → ${res.status}</div>` +
+            `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        } catch (e) {
+          box.innerHTML = `<span class="bad">요청 실패: ${e.message}</span> (F12 Console을 확인하세요)`;
+        }
+      }
+
+      const availableText = (label) => (res, data) =>
+        data.available
+          ? `<span class="ok">사용 가능한 ${label}입니다.</span>`
+          : `<span class="bad">이미 사용 중인 ${label}입니다.</span>`;
+
+      function checkNickname() {
+        const nickname = document.getElementById("nickname").value.trim();
+        callApi(`/members/nickname/${encodeURIComponent(nickname)}`, "nickname-result", availableText("닉네임"));
+      }
+
+      function checkEmail() {
+        const email = document.getElementById("email").value.trim();
+        callApi(`/members/email/${encodeURIComponent(email)}`, "email-result", availableText("이메일"));
+      }
+
+      function getRatings() {
+        const memberId = document.getElementById("memberId").value.trim();
+        callApi(`/members/${encodeURIComponent(memberId)}/ratings`, "ratings-result", (res, data) =>
+          res.ok
+            ? `<span class="ok">평점 ${data.length}건 (최신순)</span>`
+            : `<span class="bad">존재하지 않는 유저입니다. (${res.status})</span>`
+        );
       }
     </script>
   </body>
