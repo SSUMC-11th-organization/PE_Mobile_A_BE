@@ -39,8 +39,6 @@ public class RatingService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // rating 테이블에는 (member_id, movie_id) 복합 UNIQUE 제약이 걸려 있습니다.
-        // 그냥 저장해도 DB가 막아주지만, 우리가 정한 메시지로 응답하기 위해 먼저 확인합니다.
         if (ratingRepository.existsByMember_MemberIdAndMovieId(memberId, request.movieId())) {
             throw new BusinessException(ErrorCode.DUPLICATE_RATING);
         }
@@ -70,10 +68,6 @@ public class RatingService {
         ratingRepository.delete(rating);
     }
 
-    /**
-     * 평점을 찾고, 그 평점이 요청자의 것인지까지 확인합니다.
-     * 먼저 찾아보고(없으면 404), 찾았으면 주인을 봅니다(내 것이 아니면 403).
-     */
     private Rating findOwnedRating(Long ratingId, Long memberId) {
         Rating rating = ratingRepository.findById(ratingId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RATING_NOT_FOUND));
