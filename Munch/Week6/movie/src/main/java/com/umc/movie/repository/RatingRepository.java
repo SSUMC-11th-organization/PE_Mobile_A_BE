@@ -7,4 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RatingRepository extends JpaRepository<Rating, Long> {
     Page<Rating> findByMember_MemberIdOrderByRatingIdDesc(Long memberId, Pageable pageable);
+
+    // rating.member.memberId 와 movieId 로 중복 평점 여부를 확인합니다.
+    boolean existsByMember_MemberIdAndMovieId(Long memberId, Long movieId);
 }
