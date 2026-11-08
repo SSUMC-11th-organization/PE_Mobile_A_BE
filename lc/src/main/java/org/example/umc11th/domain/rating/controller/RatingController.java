@@ -7,14 +7,13 @@ import org.example.umc11th.domain.rating.dto.RatingResponse;
 import org.example.umc11th.domain.rating.dto.UpdateRatingRequest;
 import org.example.umc11th.domain.rating.service.RatingService;
 import org.example.umc11th.global.apiPayload.ApiResponse;
-import org.example.umc11th.global.auth.AuthInterceptor;
+import org.example.umc11th.global.auth.LoginMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +36,7 @@ public class RatingController {
     @PostMapping("/ratings")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<RatingResponse> create(
-            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId,
+            @LoginMember Long memberId,
             @RequestBody @Valid CreateRatingRequest request
     ) {
         return ApiResponse.onCreated("평점을 등록했습니다.", ratingService.create(memberId, request));
@@ -45,7 +44,7 @@ public class RatingController {
 
     @PatchMapping("/ratings/{ratingId}")
     public ApiResponse<RatingResponse> update(
-            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId,
+            @LoginMember Long memberId,
             @PathVariable Long ratingId,
             @RequestBody @Valid UpdateRatingRequest request
     ) {
@@ -55,7 +54,7 @@ public class RatingController {
     // 공통 응답 형식을 담기 위해 204 대신 200과 result: null로 응답한다
     @DeleteMapping("/ratings/{ratingId}")
     public ApiResponse<Void> delete(
-            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId,
+            @LoginMember Long memberId,
             @PathVariable Long ratingId
     ) {
         ratingService.delete(memberId, ratingId);

@@ -10,13 +10,12 @@ import org.example.umc11th.domain.member.dto.MemberUpdateRequest;
 import org.example.umc11th.domain.member.dto.SignUpRequest;
 import org.example.umc11th.domain.member.service.MemberService;
 import org.example.umc11th.global.apiPayload.ApiResponse;
-import org.example.umc11th.global.auth.AuthInterceptor;
+import org.example.umc11th.global.auth.LoginMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,14 +46,14 @@ public class MemberController {
 
     @GetMapping("/me")
     public ApiResponse<MemberInfoResponse> getMyInfo(
-            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId   // 인터셉터가 토큰에서 꺼내 담아둔 값
+            @LoginMember Long memberId
     ) {
         return ApiResponse.onSuccess("회원 정보를 조회했습니다.", memberService.getMyInfo(memberId));
     }
 
     @PatchMapping("/me")
     public ApiResponse<MemberInfoResponse> updateMyInfo(
-            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId,
+            @LoginMember Long memberId,
             @RequestBody @Valid MemberUpdateRequest request
     ) {
         return ApiResponse.onSuccess("회원 정보를 수정했습니다.", memberService.updateMyInfo(memberId, request));
