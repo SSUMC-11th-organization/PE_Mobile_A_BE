@@ -4,6 +4,8 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.example.umc11th.global.auth.LoginMember;
+import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +14,11 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     private static final String BEARER = "bearerAuth";
+
+    static {
+        // @LoginMember 파라미터는 토큰에서 채워지므로 문서의 요청 파라미터로 보이지 않게 한다
+        SpringDocUtils.getConfig().addAnnotationsToIgnore(LoginMember.class);
+    }
 
     @Bean
     public OpenAPI openAPI() {
