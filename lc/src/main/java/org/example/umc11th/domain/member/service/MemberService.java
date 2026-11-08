@@ -2,8 +2,10 @@ package org.example.umc11th.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.umc11th.domain.member.dto.EmailCheckResponse;
+import org.example.umc11th.domain.member.dto.MemberInfoResponse;
 import org.example.umc11th.domain.member.dto.MemberResponse;
 import org.example.umc11th.domain.member.dto.NicknameCheckResponse;
+import org.example.umc11th.domain.member.dto.MemberUpdateRequest;
 import org.example.umc11th.domain.member.dto.SignUpRequest;
 import org.example.umc11th.domain.member.entity.Member;
 import org.example.umc11th.domain.member.exception.MemberErrorCode;
@@ -47,5 +49,27 @@ public class MemberService {
                 .build();
 
         return MemberResponse.from(memberRepository.save(member));
+    }
+
+    public MemberInfoResponse getMyInfo(Long memberId) {
+        return MemberInfoResponse.from(findMember(memberId));
+    }
+
+    @Transactional
+    public MemberInfoResponse updateMyInfo(Long memberId, MemberUpdateRequest request) {
+        Member member = findMember(memberId);
+
+        // 자기 자신이 쓰는 닉네임은 중복으로 보지 않는다
+        if (memberRepository.existsByNicknameAndMemberIdNot(request.nickname(), memberId)) {
+            throw new MemberException(MemberErrorCode.MEMBER_NICKNAME_DUPLICATED);
+        }
+
+        member.updateNickname(request.nickname());
+        return MemberInfoResponse.from(member);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }

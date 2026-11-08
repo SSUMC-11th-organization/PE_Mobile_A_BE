@@ -8,6 +8,7 @@ import org.example.umc11th.global.apiPayload.code.GeneralErrorCode;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,6 +63,14 @@ public class GlobalExceptionHandler {
         BaseErrorCode code = GeneralErrorCode.BAD_REQUEST;
         return ResponseEntity.status(code.getHttpStatus())
                 .body(ApiResponse.onFailure(code.getCode(), code.getMessage(), errors));
+    }
+
+    // 지원하지 않는 HTTP 메서드 (405) - 예: 7주차에 없어진 POST /members/{memberId}/ratings
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e) {
+        BaseErrorCode code = GeneralErrorCode.METHOD_NOT_ALLOWED;
+        return ResponseEntity.status(code.getHttpStatus())
+                .body(ApiResponse.onFailure(code.getCode(), code.getMessage(), null));
     }
 
     // JSON 형식 오류, 숫자 자리에 문자가 온 경우 등 (400) - 기본 오류 응답 대신 같은 형식으로 응답
