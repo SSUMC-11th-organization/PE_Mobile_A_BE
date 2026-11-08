@@ -37,7 +37,7 @@ public class RatingService {
     }
 
     @Transactional
-    public Long create(Long memberId, CreateRatingRequest request) {
+    public RatingResponse create(Long memberId, CreateRatingRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -53,12 +53,16 @@ public class RatingService {
                 .comment(request.comment())
                 .build();
 
-        return ratingRepository.save(rating).getRatingId();
+        return RatingResponse.from(ratingRepository.save(rating));
     }
 
     @Transactional
-    public void update(Long memberId, Long ratingId, UpdateRatingRequest request) {
-        findOwnedRating(memberId, ratingId).update(request.score(), request.comment());
+    public RatingResponse update(Long memberId, Long ratingId, UpdateRatingRequest request) {
+        Rating rating = findOwnedRating(memberId, ratingId);
+        rating.update(request.score(), request.comment());
+        // @UpdateTimestamp는 flush 시점에 채워지므로, 바뀐 updatedAt을 응답에 담으려면 먼저 반영한다
+        ratingRepository.flush();
+        return RatingResponse.from(rating);
     }
 
     @Transactional
