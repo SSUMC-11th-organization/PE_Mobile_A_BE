@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum RatingErrorCode implements BaseErrorCode {
 
-    RATING_FORBIDDEN(HttpStatus.FORBIDDEN, "RATING403", "본인이 작성한 평점만 수정하거나 삭제할 수 있습니다."),
-    RATING_NOT_FOUND(HttpStatus.NOT_FOUND, "RATING404", "존재하지 않는 평점입니다."),
-    RATING_DUPLICATED(HttpStatus.CONFLICT, "RATING409", "이미 이 영화에 평점을 남기셨습니다.");
+    RATING_FORBIDDEN(HttpStatus.FORBIDDEN, "RATING403_1", "본인이 작성한 평점만 수정하거나 삭제할 수 있습니다."),
+    RATING_NOT_FOUND(HttpStatus.NOT_FOUND, "RATING404_1", "해당 평점을 찾을 수 없습니다."),
+    RATING_DUPLICATED(HttpStatus.CONFLICT, "RATING409_1", "이미 이 영화에 평점을 남기셨습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

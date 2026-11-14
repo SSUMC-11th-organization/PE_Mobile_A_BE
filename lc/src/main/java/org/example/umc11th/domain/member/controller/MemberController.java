@@ -3,13 +3,17 @@ package org.example.umc11th.domain.member.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.umc11th.domain.member.dto.EmailCheckResponse;
+import org.example.umc11th.domain.member.dto.MemberInfoResponse;
 import org.example.umc11th.domain.member.dto.MemberResponse;
 import org.example.umc11th.domain.member.dto.NicknameCheckResponse;
+import org.example.umc11th.domain.member.dto.MemberUpdateRequest;
 import org.example.umc11th.domain.member.dto.SignUpRequest;
 import org.example.umc11th.domain.member.service.MemberService;
 import org.example.umc11th.global.apiPayload.ApiResponse;
+import org.example.umc11th.global.auth.LoginMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,5 +42,20 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberResponse> signUp(@RequestBody @Valid SignUpRequest request) {
         return ApiResponse.onCreated("회원가입에 성공했습니다.", memberService.signUp(request));
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<MemberInfoResponse> getMyInfo(
+            @LoginMember Long memberId
+    ) {
+        return ApiResponse.onSuccess("회원 정보를 조회했습니다.", memberService.getMyInfo(memberId));
+    }
+
+    @PatchMapping("/me")
+    public ApiResponse<MemberInfoResponse> updateMyInfo(
+            @LoginMember Long memberId,
+            @RequestBody @Valid MemberUpdateRequest request
+    ) {
+        return ApiResponse.onSuccess("회원 정보를 수정했습니다.", memberService.updateMyInfo(memberId, request));
     }
 }
