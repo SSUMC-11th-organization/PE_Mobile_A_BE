@@ -1,5 +1,6 @@
 package org.example.umc11th.domain.member.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.umc11th.domain.member.dto.EmailCheckResponse;
@@ -28,16 +29,19 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @SecurityRequirements // 공개 API - Swagger 문서에서 자물쇠를 뺀다
     @GetMapping("/nickname/{nickname}")
     public ApiResponse<NicknameCheckResponse> checkNickname(@PathVariable String nickname) {
         return ApiResponse.onSuccess(memberService.checkNickname(nickname));
     }
 
+    @SecurityRequirements // 공개 API - Swagger 문서에서 자물쇠를 뺀다
     @GetMapping("/email/{email}")
     public ApiResponse<EmailCheckResponse> checkEmail(@PathVariable String email) {
         return ApiResponse.onSuccess(memberService.checkEmail(email));
     }
 
+    @SecurityRequirements // 공개 API - Swagger 문서에서 자물쇠를 뺀다
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberResponse> signUp(@RequestBody @Valid SignUpRequest request) {

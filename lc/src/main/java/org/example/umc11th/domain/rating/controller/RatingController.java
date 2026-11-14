@@ -1,5 +1,6 @@
 package org.example.umc11th.domain.rating.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.umc11th.domain.rating.dto.CreateRatingRequest;
@@ -28,6 +29,7 @@ public class RatingController {
     private final RatingService ratingService;
 
     // 공개 조회라 토큰을 받지 않는다 (인터셉터 예외 경로)
+    @SecurityRequirements // 공개 API - Swagger 문서에서 자물쇠를 뺀다
     @GetMapping("/members/{memberId}/ratings")
     public ApiResponse<List<RatingResponse>> getMemberRatings(@PathVariable Long memberId) {
         return ApiResponse.onSuccess(ratingService.getRatingsByMember(memberId));
