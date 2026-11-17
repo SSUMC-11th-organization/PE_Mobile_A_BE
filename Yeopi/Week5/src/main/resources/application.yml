@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: movie
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/umc_movie
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      # sql/01_schema.sql로 만든 테이블과 엔티티가 맞는지만 확인합니다.
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
