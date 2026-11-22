@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: movie
+
+  # 실행 폴더(Yeopi/Week8)에 db.properties가 있으면 DB_USER·DB_PASSWORD·JWT_SECRET을 거기서 읽습니다.
+  # 없으면 그냥 넘어가고 환경 변수를 사용합니다. db.properties는 .gitignore로 커밋되지 않습니다.
+  config:
+    import: optional:file:./db.properties
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/umc_movie
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      # sql/01_schema.sql로 만든 테이블과 엔티티가 맞는지만 확인합니다.
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+
+jwt:
+  # 서명용 비밀키(32자 이상). 코드에 쓰지 않고 실행 환경(또는 db.properties)에서 받습니다.
+  secret: ${JWT_SECRET}
+  # Access Token 유효시간(초). 값이 없으면 1시간
+  access-expiration: ${JWT_ACCESS_EXPIRATION:3600}
