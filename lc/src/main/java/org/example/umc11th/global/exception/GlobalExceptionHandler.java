@@ -1,5 +1,6 @@
 package org.example.umc11th.global.exception;
 
+import org.example.umc11th.domain.favorite.exception.FavoriteErrorCode;
 import org.example.umc11th.domain.member.exception.MemberErrorCode;
 import org.example.umc11th.domain.rating.exception.RatingErrorCode;
 import org.example.umc11th.global.apiPayload.ApiResponse;
@@ -49,6 +50,9 @@ public class GlobalExceptionHandler {
         }
         if (message.contains("uk_rating_member_movie")) {
             return RatingErrorCode.RATING_DUPLICATED;
+        }
+        if (message.contains("uk_favorite_member_movie")) {
+            return FavoriteErrorCode.FAVORITE_DUPLICATED;
         }
         return GeneralErrorCode.CONFLICT;
     }
