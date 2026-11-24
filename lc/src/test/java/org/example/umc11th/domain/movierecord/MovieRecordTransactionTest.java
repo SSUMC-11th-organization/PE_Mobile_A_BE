@@ -7,6 +7,7 @@ import org.example.umc11th.domain.member.repository.MemberRepository;
 import org.example.umc11th.domain.movierecord.dto.CreateMovieRecordRequest;
 import org.example.umc11th.domain.movierecord.service.MovieRecordService;
 import org.example.umc11th.domain.rating.repository.RatingRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
-// 사전 검사를 모두 통과한 뒤 즐겨찾기 저장에서 실패하는 상황을 만들어, 먼저 저장된 평점이 rollback되는지 확인한다
+// 사전 검사를 모두 통과한 뒤 즐겨찾기 저장에서 실패하는 상황을 만들어, 먼저 저장된 평점이 rollback되는지 확인한다.
+// 요청만으로는 이 상황을 만들 수 없다. 사전 검사에서 먼저 걸러져 저장된 것 자체가 없기 때문이다.
 @SpringBootTest
 class MovieRecordTransactionTest {
 
@@ -35,10 +37,20 @@ class MovieRecordTransactionTest {
     @MockitoBean
     private FavoriteRepository favoriteRepository;
 
+    @AfterEach
+    void tearDown() {
+        ratingRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("즐겨찾기 저장이 실패하면 같은 트랜잭션에서 먼저 저장한 평점도 남지 않는다")
     void ratingIsRolledBackWhenFavoriteSaveFails() {
-        Member member = memberRepository.findAll().get(0);
+        Member member = memberRepository.save(Member.builder()
+                .email("challenger@umc.com")
+                .password("$2a$10$abcdefghijklmnopqrstuv")
+                .nickname("영화조아")
+                .build());
         Long memberId = member.getMemberId();
         given(favoriteRepository.existsByMember_MemberIdAndMovieId(anyLong(), anyLong())).willReturn(false);
         given(favoriteRepository.save(any(Favorite.class))).willThrow(new IllegalStateException("즐겨찾기 저장 실패"));
