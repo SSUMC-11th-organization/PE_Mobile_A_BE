@@ -26,6 +26,14 @@ class SwaggerDocsTest {
     }
 
     @Test
+    @DisplayName("Swagger UI 진입 주소(/swagger-ui.html)도 토큰 없이 열려 있다")
+    void swaggerUiEntryIsPublic() throws Exception {
+        // /swagger-ui.html은 /swagger-ui/index.html로 redirect하는 별개의 경로라서 따로 열어 두어야 한다
+        mockMvc.perform(get("/swagger-ui.html"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
     @DisplayName("공개 API(로그인)는 문서에 자물쇠가 없다")
     void publicApiHasNoLock() throws Exception {
         // @SecurityRequirements를 비워 두면 전체 인증 요구를 덮어써서 operation의 security가 빈 배열이 된다

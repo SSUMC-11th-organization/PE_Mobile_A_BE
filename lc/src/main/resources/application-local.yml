@@ -1,0 +1,20 @@
+# 로컬 개발: 내 컴퓨터의 Docker MySQL을 바라본다 (SPRING_PROFILES_ACTIVE 미지정 시 기본)
+spring:
+  config:
+    import: optional:file:.env[.properties]   # lc/.env 의 DB_PASSWORD 등을 읽어옴
+  datasource:
+    url: jdbc:mysql://localhost:3307/umc_movie?serverTimezone=Asia/Seoul
+    username: root
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate   # 기존 스키마(sql/01_schema.sql)와 엔티티가 맞는지만 검사
+    show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET}                          # 서명용 비밀키 (32자 이상, .env로 관리)
+  access-expiration: ${JWT_ACCESS_EXPIRATION}    # Access Token 유효시간(초)
+
+cors:
+  frontend-origin: ${FRONTEND_ORIGIN:}           # 로컬 프론트(5173, 5174)는 코드에서 항상 허용
