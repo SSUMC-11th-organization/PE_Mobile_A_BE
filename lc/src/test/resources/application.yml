@@ -18,3 +18,6 @@ spring:
 jwt:
   secret: test-secret-for-tests-only-test-secret-for-tests-only-0123456789
   access-expiration: 3600
+
+cors:
+  frontend-origin: https://frontend.example.com   # CORS 테스트용 배포 프론트 주소

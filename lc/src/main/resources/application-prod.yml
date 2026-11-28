@@ -1,0 +1,22 @@
+# 운영(EC2 + RDS): 모든 값은 EC2 실행 환경의 환경변수로 전달한다. 이 파일에는 비밀 값을 적지 않는다.
+server:
+  address: 0.0.0.0        # 외부(프론트)에서 오는 요청을 받는다
+  port: ${PORT:8080}
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME:umc_movie}?serverTimezone=Asia/Seoul
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate  # 운영 데이터는 앱 시작 시 자동으로 바꾸지 않는다 (create/update/create-drop 금지)
+    show-sql: false
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_ACCESS_EXPIRATION:3600}
+
+cors:
+  frontend-origin: ${FRONTEND_ORIGIN:}   # 배포된 프론트 주소 (스킴+호스트[+포트], 뒤에 경로 없이)

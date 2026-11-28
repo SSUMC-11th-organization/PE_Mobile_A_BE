@@ -39,3 +39,8 @@ out/
 
 ### env ###
 .env
+
+### deploy secrets ###
+*.pem
+.env.production
+deploy/prod.env

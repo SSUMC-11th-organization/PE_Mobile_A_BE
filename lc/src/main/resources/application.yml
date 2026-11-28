@@ -1,19 +1,8 @@
+# 환경과 상관없이 같은 설정만 둔다. 환경마다 다른 값은 application-{프로필}.yml에 있다.
 spring:
-  config:
-    import: optional:file:.env[.properties]   # lc/.env 의 DB_PASSWORD 등을 읽어옴
   application:
     name: umc11th
-  datasource:
-    url: jdbc:mysql://localhost:3307/umc_movie?serverTimezone=Asia/Seoul
-    username: root
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    default: local   # 프로필을 지정하지 않으면 로컬 설정으로 실행
   jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
     open-in-view: false
-
-jwt:
-  secret: ${JWT_SECRET}                          # 서명용 비밀키 (32자 이상, .env로 관리)
-  access-expiration: ${JWT_ACCESS_EXPIRATION}    # Access Token 유효시간(초)
